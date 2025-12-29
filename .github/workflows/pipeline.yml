@@ -48,6 +48,22 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
           flyctl deploy --remote-only
+      - name: Test and deploy success
+        uses: rjstone/discord-webhook-notify@v2
+        if: success()
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: info
+          text: A new version of Pokedex has been deployed
+          details: to https://full-stack-open-pokedex-fragrant-river-8693.fly.dev/ by ${{github.event.pusher.name}}
+      - name: Test and deploy failure
+        uses: rjstone/discord-webhook-notify@v2
+        if: failure()
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: error
+          text: Build failed
+          details: commit https://github.com/${{ github.repository }}/commit/${{ github.sha }} by ${{github.event.pusher.name}} broke the build :(
 
   tag_release:
     needs: [simple_deployment_pipeline, deploy]
