@@ -62,6 +62,7 @@ jobs:
           DEFAULT_BUMP: patch
 
   discord_hook:
+    needs: [simple_deployment_pipeline, deploy, tag_release]
     runs-on: ubuntu-latest
     steps:
       - uses: sarisia/actions-status-discord@v1
